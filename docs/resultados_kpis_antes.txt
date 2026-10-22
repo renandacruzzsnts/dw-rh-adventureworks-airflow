@@ -1,0 +1,402 @@
+﻿Resultados dos KPIs - gerado em 19/10/2026 20:11
+
+===== k00_validacoes.sql =====
+--- Validacoes cruzadas
+                        verificacao                         | esperado | obtido | resultado 
+------------------------------------------------------------+----------+--------+-----------
+ Registros na fato (origem: 296)                            |      296 |    296 | OK
+ Registros atuais = total de empregados (290)               |      290 |    290 | OK
+ Saidas de departamento (6)                                 |        6 |      6 | OK
+ Um registro atual por empregado                            |      290 |    290 | OK
+ K1: soma do headcount por departamento = empregados atuais |      290 |    290 | OK
+ K2: soma por faixa etaria = empregados atuais              |      290 |    290 | OK
+ K4: soma das saidas por departamento = total de saidas     |        6 |      6 | OK
+ K5: soma por escalao salarial = empregados atuais          |      290 |    290 | OK
+(8 rows)
+
+
+===== k01_headcount.sql =====
+--- K1.1 Total de empregados (historico) e empregados ativos (CurrentFlag = 1)
+ total_empregados | empregados_ativos 
+------------------+-------------------
+              290 |               290
+(1 row)
+
+--- K1.2 Headcount por departamento
+        departamento        |                grupo                 | empregados | pct  
+----------------------------+--------------------------------------+------------+------
+ Production                 | Manufacturing                        |        179 | 61.7
+ Sales                      | Sales and Marketing                  |         18 |  6.2
+ Purchasing                 | Inventory Management                 |         12 |  4.1
+ Finance                    | Executive General and Administration |         10 |  3.4
+ Information Services       | Executive General and Administration |         10 |  3.4
+ Marketing                  | Sales and Marketing                  |          9 |  3.1
+ Facilities and Maintenance | Executive General and Administration |          7 |  2.4
+ Engineering                | Research and Development             |          6 |  2.1
+ Human Resources            | Executive General and Administration |          6 |  2.1
+ Production Control         | Manufacturing                        |          6 |  2.1
+ Quality Assurance          | Quality Assurance                    |          6 |  2.1
+ Shipping and Receiving     | Inventory Management                 |          6 |  2.1
+ Document Control           | Quality Assurance                    |          5 |  1.7
+ Research and Development   | Research and Development             |          4 |  1.4
+ Tool Design                | Research and Development             |          4 |  1.4
+ Executive                  | Executive General and Administration |          2 |  0.7
+(16 rows)
+
+--- K1.3 Headcount por grupo de departamento
+                grupo                 | empregados | pct  
+--------------------------------------+------------+------
+ Manufacturing                        |        185 | 63.8
+ Executive General and Administration |         35 | 12.1
+ Sales and Marketing                  |         27 |  9.3
+ Inventory Management                 |         18 |  6.2
+ Research and Development             |         14 |  4.8
+ Quality Assurance                    |         11 |  3.8
+(6 rows)
+
+
+===== k02_perfil_etario.sql =====
+--- K2.1 Idade media dos empregados atuais
+ idade_media | idade_minima | idade_maxima | empregados 
+-------------+--------------+--------------+------------
+        36.0 |           23 |           63 |        290
+(1 row)
+
+--- K2.2 Distribuicao por faixa etaria
+ faixa_etaria | empregados | pct  
+--------------+------------+------
+ 18-25        |         26 |  9.0
+ 26-35        |        119 | 41.0
+ 36-45        |        109 | 37.6
+ 46-55        |         18 |  6.2
+ 56+          |         18 |  6.2
+(5 rows)
+
+--- K2.3 Risco de sucessao: empregados com 56+ por departamento
+        departamento        | empregados | com_56_mais | pct_56_mais 
+----------------------------+------------+-------------+-------------
+ Production                 |        179 |          13 |         7.3
+ Sales                      |         18 |           2 |        11.1
+ Engineering                |          6 |           1 |        16.7
+ Facilities and Maintenance |          7 |           1 |        14.3
+ Purchasing                 |         12 |           1 |         8.3
+ Document Control           |          5 |           0 |         0.0
+ Executive                  |          2 |           0 |         0.0
+ Finance                    |         10 |           0 |         0.0
+ Human Resources            |          6 |           0 |         0.0
+ Information Services       |         10 |           0 |         0.0
+ Marketing                  |          9 |           0 |         0.0
+ Production Control         |          6 |           0 |         0.0
+ Quality Assurance          |          6 |           0 |         0.0
+ Research and Development   |          4 |           0 |         0.0
+ Shipping and Receiving     |          6 |           0 |         0.0
+ Tool Design                |          4 |           0 |         0.0
+(16 rows)
+
+
+===== k03_tempo_casa.sql =====
+--- K3.1 Experiencia media dos empregados atuais (anos)
+ experiencia_media_anos | minimo | maximo 
+------------------------+--------+--------
+                   5.62 |   1.59 |   8.50
+(1 row)
+
+--- K3.2 Distribuicao por tempo de casa
+   tempo_de_casa    | empregados | pct  
+--------------------+------------+------
+ 1) Menos de 2 anos |          3 |  1.0
+ 2) 2 a 4 anos      |         20 |  6.9
+ 3) 4 a 6 anos      |        184 | 63.4
+ 4) 6 anos ou mais  |         83 | 28.6
+(4 rows)
+
+--- K3.3 Experiencia media por departamento (anos)
+        departamento        | empregados | experiencia_media_anos 
+----------------------------+------------+------------------------
+ Engineering                |          6 |                   5.99
+ Human Resources            |          6 |                   5.98
+ Shipping and Receiving     |          6 |                   5.98
+ Production Control         |          6 |                   5.96
+ Information Services       |         10 |                   5.95
+ Document Control           |          5 |                   5.94
+ Executive                  |          2 |                   5.94
+ Finance                    |         10 |                   5.92
+ Research and Development   |          4 |                   5.88
+ Production                 |        179 |                   5.84
+ Quality Assurance          |          6 |                   5.77
+ Marketing                  |          9 |                   5.61
+ Tool Design                |          4 |                   5.56
+ Facilities and Maintenance |          7 |                   5.09
+ Purchasing                 |         12 |                   4.86
+ Sales                      |         18 |                   3.07
+(16 rows)
+
+
+===== k04_mobilidade_interna.sql =====
+--- K4.1 Saidas de departamento e taxa de atrito
+ saidas | registros_de_alocacao | taxa_atrito_pct | empregados_que_mudaram | anos_medios_ate_mudar 
+--------+-----------------------+-----------------+------------------------+-----------------------
+      6 |                   296 |            2.03 |                      5 |                  2.14
+(1 row)
+
+--- K4.2 Saidas por departamento (departamento deixado)
+    departamento_deixado    | registros | saidas | taxa_pct 
+----------------------------+-----------+--------+----------
+ Production                 |       180 |      1 |      0.6
+ Purchasing                 |        13 |      1 |      7.7
+ Finance                    |        11 |      1 |      9.1
+ Marketing                  |        10 |      1 |     10.0
+ Engineering                |         7 |      1 |     14.3
+ Quality Assurance          |         7 |      1 |     14.3
+ Sales                      |        18 |      0 |      0.0
+ Information Services       |        10 |      0 |      0.0
+ Facilities and Maintenance |         7 |      0 |      0.0
+ Human Resources            |         6 |      0 |      0.0
+ Production Control         |         6 |      0 |      0.0
+ Shipping and Receiving     |         6 |      0 |      0.0
+ Document Control           |         5 |      0 |      0.0
+ Research and Development   |         4 |      0 |      0.0
+ Tool Design                |         4 |      0 |      0.0
+ Executive                  |         2 |      0 |      0.0
+(16 rows)
+
+--- K4.3 Detalhe das saidas
+ cod_empregado | departamento_deixado |   inicio   |    fim     | dias_no_departamento 
+---------------+----------------------+------------+------------+----------------------
+            16 | Purchasing           | 2007-12-20 | 2009-07-14 |                  572
+             4 | Engineering          | 2007-12-05 | 2010-05-30 |                  907
+           250 | Marketing            | 2011-02-25 | 2011-07-30 |                  155
+           224 | Production           | 2009-01-07 | 2011-08-31 |                  966
+           250 | Quality Assurance    | 2011-07-31 | 2012-07-14 |                  349
+           234 | Finance              | 2009-01-31 | 2013-11-13 |                 1747
+(6 rows)
+
+
+===== k05_estrutura_custo.sql =====
+--- K5.1 Custo por hora por departamento
+        departamento        | empregados | custo_hora_total | rate_medio | rate_mediano 
+----------------------------+------------+------------------+------------+--------------
+ Production                 |        179 |          2532.98 |      14.15 |        12.45
+ Sales                      |         18 |           539.50 |      29.97 |        23.08
+ Information Services       |         10 |           341.59 |      34.16 |        32.45
+ Engineering                |          6 |           240.87 |      40.14 |        34.38
+ Finance                    |         10 |           239.35 |      23.94 |        19.00
+ Purchasing                 |         12 |           219.92 |      18.33 |        18.27
+ Executive                  |          2 |           185.60 |      92.80 |        92.80
+ Research and Development   |          4 |           174.69 |      43.67 |        41.67
+ Marketing                  |          9 |           150.00 |      16.67 |        14.42
+ Production Control         |          6 |           112.08 |      18.68 |        16.00
+ Tool Design                |          4 |           108.69 |      27.17 |        26.92
+ Human Resources            |          6 |           108.15 |      18.02 |        17.43
+ Quality Assurance          |          6 |            92.79 |      15.46 |        10.58
+ Facilities and Maintenance |          7 |            91.22 |      13.03 |         9.25
+ Document Control           |          5 |            71.94 |      14.39 |        16.83
+ Shipping and Receiving     |          6 |            65.23 |      10.87 |         9.25
+(16 rows)
+
+--- K5.2 Distribuicao por escalao salarial
+    escalao     | empregados | pct  
+----------------+------------+------
+ Até 10,00      |         50 | 17.2
+ 10,01 a 15,00  |        136 | 46.9
+ 15,01 a 25,00  |         67 | 23.1
+ 25,01 a 40,00  |         22 |  7.6
+ Acima de 40,00 |         15 |  5.2
+(5 rows)
+
+--- K5.3 Total geral
+ empregados | custo_hora_total | rate_medio | rate_mediano 
+------------+------------------+------------+--------------
+        290 |          5274.59 |      18.19 |        14.00
+(1 row)
+
+
+===== k06_equidade_salarial.sql =====
+--- K6.1 Composicao e remuneracao por genero
+ genero | empregados | pct  | rate_medio | rate_mediano 
+--------+------------+------+------------+--------------
+ F      |         84 | 29.0 |      19.23 |        14.00
+ M      |        206 | 71.0 |      17.76 |        14.00
+(2 rows)
+
+--- K6.2 Cargos com homens e mulheres (comparaveis)
+             cargo              | qtd_f | qtd_m | rate_medio_f | rate_medio_m | diferenca_f_menos_m 
+--------------------------------+-------+-------+--------------+--------------+---------------------
+ Accountant                     |     1 |     1 |        26.44 |        26.44 |                0.00
+ Accounts Payable Specialist    |     1 |     1 |        19.00 |        19.00 |                0.00
+ Accounts Receivable Specialist |     2 |     1 |        19.00 |        19.00 |                0.00
+ Application Specialist         |     2 |     2 |        27.40 |        27.40 |                0.00
+ Buyer                          |     2 |     7 |        18.27 |        18.27 |                0.00
+ Design Engineer                |     2 |     1 |        32.69 |        32.69 |                0.00
+ Document Control Assistant     |     1 |     1 |        10.25 |        10.25 |                0.00
+ Janitor                        |     2 |     2 |         9.25 |         9.25 |                0.00
+ Marketing Assistant            |     2 |     1 |        13.46 |        13.46 |                0.00
+ Marketing Specialist           |     2 |     3 |        14.42 |        14.42 |                0.00
+ Production Supervisor - WC20   |     1 |     2 |        25.00 |        25.00 |                0.00
+ Production Supervisor - WC30   |     1 |     2 |        25.00 |        25.00 |                0.00
+ Production Supervisor - WC40   |     1 |     2 |        25.00 |        25.00 |                0.00
+ Production Supervisor - WC45   |     1 |     2 |        25.00 |        25.00 |                0.00
+ Production Supervisor - WC60   |     2 |     1 |        25.00 |        25.00 |                0.00
+ Production Technician - WC10   |     8 |     9 |        13.45 |        13.45 |                0.00
+ Production Technician - WC20   |     6 |    16 |        14.00 |        14.00 |                0.00
+ Production Technician - WC30   |     5 |    20 |         9.50 |         9.50 |                0.00
+ Production Technician - WC40   |     3 |    23 |        15.00 |        15.00 |                0.00
+ Production Technician - WC45   |     5 |    10 |        10.00 |        10.00 |                0.00
+ Production Technician - WC50   |     7 |    19 |        11.00 |        11.00 |                0.00
+ Production Technician - WC60   |     6 |    20 |        12.45 |        12.45 |                0.00
+ Purchasing Assistant           |     1 |     1 |        12.75 |        12.75 |                0.00
+ Sales Representative           |     6 |     8 |        23.08 |        23.08 |                0.00
+ Stocker                        |     2 |     1 |         9.00 |         9.00 |                0.00
+ Tool Designer                  |     1 |     1 |        25.00 |        25.00 |                0.00
+(26 rows)
+
+--- K6.3 Composicao de genero por departamento
+        departamento        | mulheres | homens | pct_mulheres 
+----------------------------+----------+--------+--------------
+ Document Control           |        1 |      4 |         20.0
+ Engineering                |        3 |      3 |         50.0
+ Executive                  |        1 |      1 |         50.0
+ Facilities and Maintenance |        2 |      5 |         28.6
+ Finance                    |        5 |      5 |         50.0
+ Human Resources            |        2 |      4 |         33.3
+ Information Services       |        4 |      6 |         40.0
+ Marketing                  |        4 |      5 |         44.4
+ Production                 |       46 |    133 |         25.7
+ Production Control         |        0 |      6 |          0.0
+ Purchasing                 |        4 |      8 |         33.3
+ Quality Assurance          |        0 |      6 |          0.0
+ Research and Development   |        2 |      2 |         50.0
+ Sales                      |        7 |     11 |         38.9
+ Shipping and Receiving     |        2 |      4 |         33.3
+ Tool Design                |        1 |      3 |         25.0
+(16 rows)
+
+
+===== k07_defasagem_salarial.sql =====
+--- K7.1 Resumo
+ anos_medios_desde_reajuste | maior_defasagem_anos | sem_reajuste_ha_mais_de_4_anos | pct  
+----------------------------+----------------------+--------------------------------+------
+                       5.44 |                 8.50 |                            255 | 87.9
+(1 row)
+
+--- K7.2 Distribuicao do tempo desde o ultimo reajuste
+ tempo_desde_reajuste | empregados | pct  
+----------------------+------------+------
+ 2) 1 a 2 anos        |         11 |  3.8
+ 3) 2 a 4 anos        |         24 |  8.3
+ 4) 4 anos ou mais    |        255 | 87.9
+(3 rows)
+
+--- K7.3 Defasagem por departamento
+        departamento        | empregados | anos_medios | sem_reajuste_ha_mais_de_4_anos 
+----------------------------+------------+-------------+--------------------------------
+ Engineering                |          6 |        5.99 |                              5
+ Shipping and Receiving     |          6 |        5.99 |                              6
+ Human Resources            |          6 |        5.98 |                              6
+ Information Services       |         10 |        5.95 |                             10
+ Document Control           |          5 |        5.94 |                              5
+ Finance                    |         10 |        5.92 |                             10
+ Research and Development   |          4 |        5.88 |                              4
+ Quality Assurance          |          6 |        5.77 |                              6
+ Production                 |        179 |        5.64 |                            171
+ Production Control         |          6 |        5.46 |                              5
+ Marketing                  |          9 |        5.13 |                              5
+ Facilities and Maintenance |          7 |        5.08 |                              7
+ Purchasing                 |         12 |        4.74 |                             11
+ Tool Design                |          4 |        4.55 |                              3
+ Executive                  |          2 |        4.44 |                              1
+ Sales                      |         18 |        3.07 |                              0
+(16 rows)
+
+
+===== k08_cargos_ocupante_unico.sql =====
+--- K8.1 Resumo
+ total_cargos | cargos_ocupante_unico | pct_cargos_unicos 
+--------------+-----------------------+-------------------
+           67 |                    28 |              41.8
+(1 row)
+
+--- K8.2 Cargos de ocupante unico por departamento (quantidade)
+        departamento        | cargos_ocupante_unico 
+----------------------------+-----------------------
+ Sales                      |                     4
+ Engineering                |                     3
+ Facilities and Maintenance |                     3
+ Finance                    |                     3
+ Executive                  |                     2
+ Human Resources            |                     2
+ Information Services       |                     2
+ Production Control         |                     2
+ Quality Assurance          |                     2
+ Document Control           |                     1
+ Marketing                  |                     1
+ Production                 |                     1
+ Purchasing                 |                     1
+ Shipping and Receiving     |                     1
+(14 rows)
+
+--- K8.3 Cruzamento com K2: cargos de ocupante unico ocupados por quem tem 56+
+ departamento |            cargo             | idade 
+--------------+------------------------------+-------
+ Sales        | European Sales Manager       |    57
+ Sales        | North American Sales Manager |    63
+(2 rows)
+
+
+===== k09_passivo_ferias.sql =====
+--- K9.1 Passivo estimado por departamento
+        departamento        | empregados | horas_acumuladas | media_horas | passivo_estimado 
+----------------------------+------------+------------------+-------------+------------------
+ Production                 |        179 |             8787 |        49.1 |        130776.81
+ Information Services       |         10 |              695 |        69.5 |         23551.67
+ Finance                    |         10 |              595 |        59.5 |         14097.33
+ Sales                      |         18 |              499 |        27.7 |         13382.08
+ Executive                  |          2 |               99 |        49.5 |         12424.50
+ Purchasing                 |         12 |              654 |        54.5 |         11965.43
+ Research and Development   |          4 |              202 |        50.5 |          8867.20
+ Facilities and Maintenance |          7 |              623 |        89.0 |          8106.87
+ Quality Assurance          |          6 |              495 |        82.5 |          7592.78
+ Marketing                  |          9 |              396 |        44.0 |          6513.46
+ Shipping and Receiving     |          6 |              573 |        95.5 |          6202.96
+ Human Resources            |          6 |              309 |        51.5 |          5584.03
+ Document Control           |          5 |              385 |        77.0 |          5519.83
+ Production Control         |          6 |              273 |        45.5 |          5066.86
+ Tool Design                |          4 |               72 |        18.0 |          2059.54
+ Engineering                |          6 |               21 |         3.5 |           748.56
+(16 rows)
+
+--- K9.2 Total geral
+ empregados | horas_acumuladas | passivo_estimado 
+------------+------------------+------------------
+        290 |            14678 |        262459.92
+(1 row)
+
+
+===== k10_absenteismo.sql =====
+--- K10.1 Media geral de horas de licenca-doenca
+ media_horas | minimo | maximo 
+-------------+--------+--------
+        45.3 |     20 |     80
+(1 row)
+
+--- K10.2 Horas de licenca-doenca por departamento
+        departamento        | empregados | media_horas | minimo | maximo | diferenca_vs_media_geral 
+----------------------------+------------+-------------+--------+--------+--------------------------
+ Shipping and Receiving     |          6 |        67.5 |     66 |     69 |                     22.2
+ Facilities and Maintenance |          7 |        64.3 |     63 |     66 |                     19.0
+ Quality Assurance          |          6 |        61.0 |     60 |     62 |                     15.7
+ Document Control           |          5 |        58.2 |     57 |     59 |                     12.9
+ Information Services       |         10 |        54.5 |     52 |     57 |                      9.2
+ Research and Development   |          4 |        54.0 |     50 |     64 |                      8.7
+ Finance                    |         10 |        49.5 |     47 |     52 |                      4.2
+ Purchasing                 |         12 |        47.0 |     44 |     50 |                      1.7
+ Human Resources            |          6 |        45.5 |     44 |     47 |                      0.2
+ Executive                  |          2 |        44.5 |     20 |     69 |                     -0.8
+ Production                 |        179 |        44.3 |     20 |     69 |                     -1.0
+ Production Control         |          6 |        42.5 |     41 |     44 |                     -2.8
+ Marketing                  |          9 |        41.8 |     40 |     44 |                     -3.5
+ Tool Design                |          4 |        37.8 |     23 |     80 |                     -7.6
+ Sales                      |         18 |        33.6 |     25 |     39 |                    -11.7
+ Engineering                |          6 |        21.5 |     20 |     23 |                    -23.8
+(16 rows)
+
