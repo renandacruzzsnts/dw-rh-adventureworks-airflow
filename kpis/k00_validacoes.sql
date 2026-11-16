@@ -1,4 +1,5 @@
-
+-- Validacoes cruzadas: as somas dos KPIs precisam bater com os totais.
+-- Valores esperados (296, 290 e 6) vem do profiling da origem sem alteracoes.
 \echo '--- Validacoes cruzadas'
 WITH base AS (
     SELECT * FROM dw.f_empregado_historico WHERE flag_registro_atual = 1
@@ -35,6 +36,13 @@ checks AS (
     SELECT 'K5: soma por escalao salarial = empregados atuais',
            (SELECT COUNT(*) FROM base),
            (SELECT COUNT(*) FROM base b JOIN dw.d_escalao_salarial es ON es.id = b.escalao_id)
+    UNION ALL
+    SELECT 'K7: soma das contratacoes por ano = total de empregados',
+           (SELECT COUNT(DISTINCT empregado_id) FROM dw.f_empregado_historico),
+           (SELECT SUM(n) FROM (SELECT COUNT(DISTINCT f.empregado_id) AS n
+                                  FROM dw.f_empregado_historico f
+                                  JOIN dw.d_calendario c ON c.id = f.calendario_contratacao_id
+                                 GROUP BY c.ano) t)
 )
 SELECT verificacao, esperado, obtido,
        CASE WHEN esperado = obtido THEN 'OK' ELSE 'FALHOU' END AS resultado
